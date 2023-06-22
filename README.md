@@ -1,1 +1,3 @@
 # Journey_of_MachineLearning
+
+I started on this idea (Journey of ML) in June 2023, a time when I decided to pivot my career towards a more modeling-oriented role. It also served as a means to refresh my knowledge of data science, acting as my personal machine learning dictionary. I will continually add new content to this repository...
