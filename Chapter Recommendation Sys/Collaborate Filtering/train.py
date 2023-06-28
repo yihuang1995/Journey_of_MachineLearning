@@ -99,7 +99,7 @@ def train(model,epochs=10,lr = 0.02,wd=0,unsqueeze = False):
 	train_dl = DataLoader(train_ds,batch_size = 64,shuffle=True)
 	valid_dl = DataLoader(valid_ds,batch_size = 64)
 
-	model = RecSysModel(len_encoding[0],len_encoding[1]).cuda()
+	model = model(len_encoding[0],len_encoding[1]).cuda()
 	optimizer = torch.optim.Adam(model.parameters(),lr = lr,weight_decay = wd)
 	for i in range(epochs):
 		model.train()
