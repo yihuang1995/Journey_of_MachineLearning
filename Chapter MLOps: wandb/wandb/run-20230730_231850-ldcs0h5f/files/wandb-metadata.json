@@ -1,0 +1,164 @@
+{
+    "os": "Linux-5.15.0-78-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2023-07-31T06:18:51.745243",
+    "startedAt": "2023-07-31T06:18:50.571809",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "Documents/GitHub/Journey_of_MachineLearning/Chapter MLOps: wandb/wandb 01 EDA.ipynb",
+    "root": "/home/yi/Documents/GitHub/Journey_of_MachineLearning",
+    "git": {
+        "remote": "https://github.com/yihuang1995/Journey_of_MachineLearning.git",
+        "commit": "55f44089726d175b22de95a9a0457e1590660b89"
+    },
+    "email": "yhuang162@dons.usfca.edu",
+    "host": "yi-desktop",
+    "username": "yi",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2162.1716666666666,
+        "min": 2200.0,
+        "max": 3800.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2667.928,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 1924.495,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.901,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.316,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.907,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.069,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.412,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.758,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2190.619,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.695,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.055,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.228,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2785.858,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2131.597,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2195.574,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2196.071,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.432,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.915,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2194.566,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2199.046,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2189.603,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2190.874,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2192.919,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2192.983,
+            "min": 2200.0,
+            "max": 3800.0
+        }
+    ],
+    "disk": {
+        "total": 296.0864601135254,
+        "used": 193.1207160949707
+    },
+    "gpu": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3080",
+            "memory_total": 10501423104
+        }
+    ],
+    "memory": {
+        "total": 39.09022521972656
+    }
+}
