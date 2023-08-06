@@ -1,0 +1,10 @@
+
+None
+[34m[1mwandb[39m[22m: Downloading large artifact bdd_simple_1k:latest, 846.57MB. 4007 files...
+[34m[1mwandb[39m[22m:   4007 of 4007 files downloaded.
+Done. 0:0:13.3
+[34m[1mwandb[39m[22m: Downloading large artifact bdd_simple_1k:latest, 846.57MB. 4007 files...
+[34m[1mwandb[39m[22m:   4007 of 4007 files downloaded.
+Done. 0:0:11.4
+
+[34m[1mwandb[39m[22m: Adding directory to artifact (./artifacts/bdd_simple_1k:latest)... Done. 3.5s
