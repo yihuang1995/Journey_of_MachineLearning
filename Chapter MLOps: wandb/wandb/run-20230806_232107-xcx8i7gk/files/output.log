@@ -1,0 +1,14 @@
+
+[34m[1mwandb[39m[22m: Downloading large artifact bdd_simple_1k_split:latest, 846.07MB. 4010 files...
+[34m[1mwandb[39m[22m:   4010 of 4010 files downloaded.
+Done. 0:0:12.7
+Downloading: "https://download.pytorch.org/models/resnet18-5c106cde.pth" to /home/yi/.cache/torch/hub/checkpoints/resnet18-5c106cde.pth
+Better model found at epoch 0 with miou value: 0.3000471158256307.
+Better model found at epoch 1 with miou value: 0.32906461043170004.
+Better model found at epoch 3 with miou value: 0.33438579424478293.
+Better model found at epoch 4 with miou value: 0.34984380751070987.
+Better model found at epoch 5 with miou value: 0.3510388027211332.
+Better model found at epoch 6 with miou value: 0.3728088940168706.
+Better model found at epoch 7 with miou value: 0.37484385757239586.
+Better model found at epoch 8 with miou value: 0.3791292982050898.
+Better model found at epoch 9 with miou value: 0.3794084577395318.

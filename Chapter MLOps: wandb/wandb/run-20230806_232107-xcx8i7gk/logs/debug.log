@@ -1,0 +1,83 @@
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Current SDK version is 0.15.7
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Configure stats pid to 3432
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Loading settings from /home/yi/.config/wandb/settings
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Loading settings from /home/yi/Documents/GitHub/Journey_of_MachineLearning/Chapter MLOps: wandb/wandb/settings
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2023-08-06 23:21:07,075 INFO    MainThread:3432 [wandb_init.py:_log_setup():507] Logging user logs to /home/yi/Documents/GitHub/Journey_of_MachineLearning/Chapter MLOps: wandb/wandb/run-20230806_232107-xcx8i7gk/logs/debug.log
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:_log_setup():508] Logging internal logs to /home/yi/Documents/GitHub/Journey_of_MachineLearning/Chapter MLOps: wandb/wandb/run-20230806_232107-xcx8i7gk/logs/debug-internal.log
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:_jupyter_setup():453] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x7f258a31fb20>
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:init():547] calling init triggers
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'framework': 'fastai', 'img_size': (180, 320), 'batch_size': 8, 'augment': True, 'epochs': 10, 'lr': 0.002, 'pretrained': True, 'seed': 42}
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:init():596] starting backend
+2023-08-06 23:21:07,076 INFO    MainThread:3432 [wandb_init.py:init():600] setting up manager
+2023-08-06 23:21:07,077 INFO    MainThread:3432 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-08-06 23:21:07,083 INFO    MainThread:3432 [wandb_init.py:init():606] backend started and connected
+2023-08-06 23:21:07,097 INFO    MainThread:3432 [wandb_run.py:_label_probe_notebook():1234] probe notebook
+2023-08-06 23:21:07,097 INFO    MainThread:3432 [wandb_run.py:_label_probe_notebook():1244] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2023-08-06 23:21:07,097 INFO    MainThread:3432 [wandb_init.py:init():697] updated telemetry
+2023-08-06 23:21:07,132 INFO    MainThread:3432 [wandb_init.py:init():730] communicating run to backend with 60.0 second timeout
+2023-08-06 23:21:07,372 INFO    MainThread:3432 [wandb_run.py:_on_init():2174] communicating current version
+2023-08-06 23:21:07,532 INFO    MainThread:3432 [wandb_run.py:_on_init():2183] got version response upgrade_message: "wandb version 0.15.8 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-08-06 23:21:07,532 INFO    MainThread:3432 [wandb_init.py:init():781] starting run threads in backend
+2023-08-06 23:21:08,064 INFO    MainThread:3432 [wandb_run.py:_console_start():2153] atexit reg
+2023-08-06 23:21:08,064 INFO    MainThread:3432 [wandb_run.py:_redirect():2008] redirect: wrap_raw
+2023-08-06 23:21:08,064 INFO    MainThread:3432 [wandb_run.py:_redirect():2073] Wrapping output streams.
+2023-08-06 23:21:08,064 INFO    MainThread:3432 [wandb_run.py:_redirect():2098] Redirects installed.
+2023-08-06 23:21:08,065 INFO    MainThread:3432 [wandb_init.py:init():822] run started, returning control to user process
+2023-08-06 23:21:08,065 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:21:08,065 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:21:25,093 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:21:40,729 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:21:40,729 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:21:47,110 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:21:47,365 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:21:47,365 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:02,790 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:02,793 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:02,793 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:09,220 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:09,220 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:09,220 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:15,020 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:15,034 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:15,034 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:20,775 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:20,775 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:20,776 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:35,935 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:35,936 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:35,936 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:41,760 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:22:46,549 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:22:46,549 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:22:50,598 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:23:46,153 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:23:46,153 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:23:56,458 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:23:56,459 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:23:56,459 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:23:57,078 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:23:57,243 INFO    MainThread:3432 [wandb_run.py:_config_callback():1282] config_cb None None {'Learner': {'loss_func': {'axis': 1, 'flatten': True, 'floatify': False, 'is_2d': True, '_name': 'FlattenedLoss of CrossEntropyLoss()'}, 'opt_func': 'fastai.optimizer.Adam', 'lr': 0.001, 'splitter': 'fastai.vision.learner._resnet_split', 'metrics': ['<utils.MIOU object at 0x7f26be7b3b20>', '<utils.BackgroundIOU object at 0x7f26be7b3c10>', '<utils.RoadIOU object at 0x7f26be7b3b50>', '<utils.TrafficLightIOU object at 0x7f26be7b3850>', '<utils.TrafficSignIOU object at 0x7f26be7b3f40>', '<utils.PersonIOU object at 0x7f26be7b3250>', '<utils.VehicleIOU object at 0x7f26bbb01eb0>', '<utils.BicycleIOU object at 0x7f26bbb01ee0>'], 'path': '.', 'model_dir': 'models', 'wd': None, 'wd_bn_bias': False, 'train_bn': True, 'moms': [0.95, 0.85, 0.95], 'default_cbs': True, 'arch': 'torchvision.models.resnet.resnet18', 'normalize': True, 'n_out': 7, 'pretrained': True, '_name': '<fastai.learner.Learner object at 0x7f26f0212310>'}, 'TrainEvalCallback': True, 'Recorder': {'add_time': True, 'train_metrics': False, 'valid_metrics': True}, 'CastToTensor': True, 'ProgressCallback': True, 'ParamScheduler': True, 'SaveModelCallback': {'fname': 'model', 'every_epoch': False, 'at_end': False, 'with_opt': False}, 'WandbCallback': {'log': None, 'log_preds': False, 'log_preds_every_epoch': False, 'log_model': True, 'model_name': None, 'log_dataset': False, 'dataset_name': None, 'valid_dl': None, 'n_preds': 36, 'seed': 12345, 'reorder': True}, 'n_inp': 1, 'input 1 dim 1': 8, 'input 1 dim 2': 3, 'input 1 dim 3': 180, 'input 1 dim 4': 320, 'batch size': 8, 'batch per epoch': 100, 'model parameters': 31113508, 'device': 'cuda', 'frozen': True, 'frozen idx': 2, 'dataset.tfms': "[Pipeline: ColReader -- {'cols': 'image_fname', 'pref': '', 'suff': '', 'label_delim': None} -> PILBase.create, Pipeline: ColReader -- {'cols': 'label_fname', 'pref': '', 'suff': '', 'label_delim': None} -> PILBase.create]", 'dls.after_item': "Pipeline: AddMaskCodes -> Resize -- {'size': (320, 180), 'method': 'crop', 'pad_mode': 'reflection', 'resamples': (2, 0), 'p': 1.0} -> ToTensor", 'dls.before_batch': 'Pipeline: ', 'dls.after_batch': "Pipeline: IntToFloatTensor -- {'div': 255.0, 'div_mask': 1} -> Flip -- {'size': None, 'mode': 'bilinear', 'pad_mode': 'reflection', 'mode_mask': 'nearest', 'align_corners': True, 'p': 0.5} -> Brightness -- {'max_lighting': 0.2, 'p': 1.0, 'draw': None, 'batch': False} -> Normalize -- {'mean': tensor([[[[0.4850]],\n\n         [[0.4560]],\n\n         [[0.4060]]]], device='cuda:0'), 'std': tensor([[[[0.2290]],\n\n         [[0.2240]],\n\n         [[0.2250]]]], device='cuda:0'), 'axes': (0, 2, 3)}"}
+2023-08-06 23:27:30,011 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:27:30,011 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:27:35,321 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:27:49,585 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:27:49,585 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:28:05,611 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:28:07,588 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:28:07,588 INFO    MainThread:3432 [wandb_init.py:_pause_backend():418] pausing backend
+2023-08-06 23:28:09,110 INFO    MainThread:3432 [wandb_init.py:_resume_backend():423] resuming backend
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [wandb_run.py:_finish():1888] finishing run yihuanghz95/mlops-course-001/xcx8i7gk
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [jupyter.py:save_history():445] not saving jupyter history
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [wandb_init.py:_jupyter_teardown():435] cleaning up jupyter logic
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [wandb_run.py:_atexit_cleanup():2122] got exitcode: 0
+2023-08-06 23:28:09,111 INFO    MainThread:3432 [wandb_run.py:_restore():2105] restore
+2023-08-06 23:28:09,112 INFO    MainThread:3432 [wandb_run.py:_restore():2111] restore done
+2023-08-06 23:29:00,851 INFO    MainThread:3432 [wandb_run.py:_footer_history_summary_info():3475] rendering history
+2023-08-06 23:29:00,853 INFO    MainThread:3432 [wandb_run.py:_footer_history_summary_info():3507] rendering summary
+2023-08-06 23:29:00,858 INFO    MainThread:3432 [wandb_run.py:_footer_sync_info():3434] logging synced files
