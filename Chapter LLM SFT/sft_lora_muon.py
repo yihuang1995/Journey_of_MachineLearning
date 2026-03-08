@@ -35,11 +35,19 @@ from typing import Callable, Iterable
 # ──────────────────────────────────────────────
 from unsloth import FastLanguageModel
 
-MAX_SEQ_LEN = 2048
+MODEL_PATH  = "/kaggle/input/gpt-oss-120b/transformers/default/1"
+# ^ Local Kaggle path for GPT-OSS 120B. Replace with any HF repo or local dir.
+
+MAX_SEQ_LEN = 4096
+# ^ GPT-OSS 120B supports long contexts. 4096 is a practical SFT default;
+#   raise to 8192+ for long chain-of-thought math problems.
+
 LORA_RANK   = 16
 
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name="meta-llama/Llama-3.2-1B-Instruct",
+    model_name=MODEL_PATH,
+    # ^ GPT-OSS 120B local path. Unsloth shards across all visible GPUs.
+    #   Needs 2× A100 80GB in 4-bit QLoRA, or 4–8× for full bf16.
     max_seq_length=MAX_SEQ_LEN,
     dtype=None,         # auto: bfloat16 on Ampere+, float16 otherwise
     load_in_4bit=True,  # QLoRA: 4-bit base weights, LoRA adapters in bf16
@@ -304,10 +312,17 @@ RAW_DATA = [
 ]
 
 def format_example(row):
-    text = (
-        f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{SYSTEM_PROMPT}<|eot_id|>"
-        f"<|start_header_id|>user<|end_header_id|>\n\n{row['problem']}<|eot_id|>"
-        f"<|start_header_id|>assistant<|end_header_id|>\n\n{row['solution']}<|eot_id|>"
+    # Use tokenizer.apply_chat_template so special tokens match GPT-OSS 120B
+    # exactly — no hardcoded Llama-3 headers that may differ across models.
+    messages = [
+        {"role": "system",    "content": SYSTEM_PROMPT},
+        {"role": "user",      "content": row["problem"]},
+        {"role": "assistant", "content": row["solution"]},
+    ]
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=False,  # include full assistant turn for training
     )
     return {"text": text}
 

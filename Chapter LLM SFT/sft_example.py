@@ -12,8 +12,12 @@ Install:
   pip install trl peft datasets accelerate bitsandbytes
 
 Goal of this file:
-  Fine-tune Llama-3.2-1B-Instruct on a small math QA dataset so it learns to
-  output answers inside \\boxed{} — the same format as the AIMO notebook.
+  Fine-tune GPT-OSS 120B (the model used in the AIMO-3 Kaggle notebook) on a
+  math QA dataset so it learns to output answers inside \\boxed{}.
+
+  Model path (Kaggle): /kaggle/input/gpt-oss-120b/transformers/default/1
+  GPT-OSS 120B requires at least 2× A100 80GB (tensor_parallel_size=2) for
+  4-bit QLoRA, or 4–8× for full bf16.
 """
 
 # ──────────────────────────────────────────────
@@ -22,31 +26,37 @@ Goal of this file:
 from unsloth import FastLanguageModel
 import torch
 
-MAX_SEQ_LEN = 2048
+MODEL_PATH = "/kaggle/input/gpt-oss-120b/transformers/default/1"
+# ^ Local path to GPT-OSS 120B weights (Kaggle competition environment).
+#   Outside Kaggle, replace with any HuggingFace repo or local directory.
+
+MAX_SEQ_LEN = 4096
 # ^ Maximum token length for both prompt and completion combined.
-#   Sequences longer than this are truncated. Use 4096–8192 for harder math.
+#   GPT-OSS 120B supports long contexts; 4096 is a practical SFT default.
+#   Increase to 8192–65536 for problems that need long chain-of-thought.
 
 DTYPE = None
 # ^ None = auto-detect: bfloat16 on Ampere+ GPUs, float16 otherwise.
 #   You can also force torch.float16 or torch.bfloat16.
 
 LOAD_IN_4BIT = True
-# ^ True  = load weights in 4-bit (QLoRA). Cuts VRAM ~4x vs float16.
-#            A 7B model that needs ~14 GB fp16 now fits in ~5 GB.
-# ^ False = load in the dtype above (full LoRA or full fine-tune).
+# ^ True  = load weights in 4-bit (QLoRA). Cuts VRAM ~4x vs bfloat16.
+#            GPT-OSS 120B in bf16 needs ~240 GB; in 4-bit QLoRA ~60–70 GB,
+#            fitting across 2× A100 80GB with tensor_parallel_size=2.
+# ^ False = full precision LoRA — needs 4–8× A100 for a 120B model.
 
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name="meta-llama/Llama-3.2-1B-Instruct",
-    # ^ HuggingFace repo or local path to the BASE or INSTRUCT checkpoint.
-    #   Use the instruct variant when you want to preserve chat behaviour.
+    model_name=MODEL_PATH,
+    # ^ Local path or HuggingFace repo for GPT-OSS 120B.
+    #   Unsloth will shard the weights across all visible GPUs automatically.
 
     max_seq_length=MAX_SEQ_LEN,
     dtype=DTYPE,
     load_in_4bit=LOAD_IN_4BIT,
 
     token=None,
-    # ^ HuggingFace access token for gated models (e.g. Llama-3).
-    #   Set to your token string or use: huggingface-cli login
+    # ^ HuggingFace access token — not needed for local Kaggle paths.
+    #   Required when loading gated HF repos (e.g. Llama-3, Gemma).
 )
 
 
@@ -144,21 +154,25 @@ SYSTEM_PROMPT = (
 
 def format_example(row: dict) -> dict:
     """
-    Apply the Llama-3 chat template manually.
-    SFTTrainer expects a single string field containing the full formatted text.
-    The model is trained to predict ONLY the completion part (after <|start_header_id|>assistant).
+    Apply the GPT-OSS chat template via the tokenizer.
+    Using tokenizer.apply_chat_template() is model-agnostic — it reads the
+    correct special tokens (BOS, EOS, role headers) directly from the tokenizer
+    config, so this code works unchanged if you swap the base model.
+
+    SFTTrainer expects a single string field ("text") containing the full
+    formatted conversation including special tokens.
     """
-    text = (
-        "<|begin_of_text|>"
-        "<|start_header_id|>system<|end_header_id|>\n\n"
-        f"{SYSTEM_PROMPT}"
-        "<|eot_id|>"
-        "<|start_header_id|>user<|end_header_id|>\n\n"
-        f"{row['problem']}"
-        "<|eot_id|>"
-        "<|start_header_id|>assistant<|end_header_id|>\n\n"
-        f"{row['solution']}"
-        "<|eot_id|>"
+    messages = [
+        {"role": "system",    "content": SYSTEM_PROMPT},
+        {"role": "user",      "content": row["problem"]},
+        {"role": "assistant", "content": row["solution"]},
+    ]
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,         # return a string, not token IDs
+        add_generation_prompt=False,
+        # ^ False = include the assistant turn (we want to train on it).
+        #   True  = stop after the assistant header (used at inference time).
     )
     return {"text": text}
 
@@ -308,15 +322,16 @@ FastLanguageModel.for_inference(model)
 # ^ Switches the model from training mode to optimized inference mode.
 #   Must call this before generating — unsloth applies faster attention kernels.
 
-test_prompt = (
-    "<|begin_of_text|>"
-    "<|start_header_id|>system<|end_header_id|>\n\n"
-    f"{SYSTEM_PROMPT}"
-    "<|eot_id|>"
-    "<|start_header_id|>user<|end_header_id|>\n\n"
-    "What is 15 squared minus 100?"
-    "<|eot_id|>"
-    "<|start_header_id|>assistant<|end_header_id|>\n\n"
+test_messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {"role": "user",   "content": "What is 15 squared minus 100?"},
+]
+test_prompt = tokenizer.apply_chat_template(
+    test_messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    # ^ True = append the assistant role header so the model knows to generate
+    #   a response. GPT-OSS tokenizer inserts the correct header automatically.
 )
 
 inputs = tokenizer(test_prompt, return_tensors="pt").to("cuda")
