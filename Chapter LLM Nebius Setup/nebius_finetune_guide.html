@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nebius AI — LLM Fine-Tuning Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --code-bg: #1f2937;
+      --tag-bg: #21262d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+    header p  { color: var(--muted); font-size: 1rem; }
+    .badge {
+      display: inline-block;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: .2rem .8rem;
+      font-size: .75rem;
+      color: var(--muted);
+      margin: .2rem;
+    }
+    .badge.green { color: var(--green); border-color: var(--green); }
+    .badge.blue  { color: var(--accent); border-color: var(--accent); }
+
+    /* Nav pills */
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: .3rem .8rem;
+      border-radius: 6px;
+      font-size: .875rem;
+      transition: background .15s;
+    }
+    .nav a:hover { background: var(--tag-bg); color: var(--text); }
+
+    /* Sections */
+    section { margin-bottom: 3rem; }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .4rem;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+    }
+    h3 { font-size: 1.05rem; font-weight: 600; margin: 1.4rem 0 .6rem; }
+    p  { margin-bottom: .8rem; color: #c9d1d9; }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 3px solid var(--border);
+      background: var(--surface);
+      padding: .8rem 1rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1rem 0;
+      font-size: .9rem;
+    }
+    .callout.tip    { border-color: var(--green);  }
+    .callout.warn   { border-color: var(--yellow); }
+    .callout.info   { border-color: var(--accent); }
+    .callout-title  { font-weight: 600; margin-bottom: .3rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+    .callout.tip  .callout-title  { color: var(--green);  }
+    .callout.warn .callout-title  { color: var(--yellow); }
+    .callout.info .callout-title  { color: var(--accent); }
+
+    /* Code blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      overflow-x: auto;
+      font-size: .83rem;
+      line-height: 1.6;
+      margin: .8rem 0 1.2rem;
+      position: relative;
+    }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+    p code, li code {
+      background: var(--tag-bg);
+      padding: .15em .4em;
+      border-radius: 4px;
+      font-size: .85em;
+    }
+    .lang-label {
+      position: absolute;
+      top: .4rem; right: .7rem;
+      font-size: .7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* Comment style in code */
+    .cm { color: #6e7681; }
+    .kw { color: #ff7b72; }
+    .st { color: #a5d6ff; }
+    .fn { color: #d2a8ff; }
+    .nu { color: #79c0ff; }
+    .va { color: #ffa657; }
+
+    /* Steps */
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      min-width: 28px; height: 28px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: .8rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: .15rem;
+    }
+    .steps li > div { flex: 1; }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+      margin: 1rem 0 1.5rem;
+    }
+    th {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: .5rem .8rem;
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    td {
+      border: 1px solid var(--border);
+      padding: .5rem .8rem;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #0d1117; }
+    .default { color: var(--muted); }
+
+    /* Flow diagram */
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin: 1rem 0 1.5rem;
+      font-size: .85rem;
+    }
+    .flow-box {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .35rem .8rem;
+    }
+    .flow-arrow { color: var(--muted); }
+    .flow-box.active { border-color: var(--green); color: var(--green); }
+
+    /* File links */
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .file-card:hover { border-color: var(--accent); }
+    .file-card .fname { color: var(--accent); font-size: .9rem; font-weight: 600; margin-bottom: .3rem; }
+    .file-card .fdesc { color: var(--muted); font-size: .8rem; }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem;
+      margin-top: 4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── Header ───────────────────────────────────── -->
+  <header>
+    <h1>Nebius AI — LLM Fine-Tuning Guide</h1>
+    <p>Two approaches: Nebius Token Factory API &nbsp;|&nbsp; Self-hosted GPU VM (unsloth + TRL)</p>
+    <br>
+    <span class="badge blue">GPT-OSS 120B</span>
+    <span class="badge green">LoRA / QLoRA</span>
+    <span class="badge">MUON Optimizer</span>
+    <span class="badge">vLLM Inference</span>
+    <span class="badge">AIMO-3</span>
+  </header>
+
+  <!-- ── Nav ──────────────────────────────────────── -->
+  <nav class="nav">
+    <a href="#overview">Overview</a>
+    <a href="#approach-a">Approach A: Token Factory API</a>
+    <a href="#approach-b">Approach B: GPU VM</a>
+    <a href="#hyperparams">Hyperparameters</a>
+    <a href="#dataset">Dataset Format</a>
+    <a href="#monitor">Monitor & Download</a>
+    <a href="#files">Repo Files</a>
+  </nav>
+
+
+  <!-- ── Overview ─────────────────────────────────── -->
+  <section id="overview">
+    <h2>Overview</h2>
+    <p>
+      Nebius offers two paths for fine-tuning LLMs. Choose based on your needs:
+    </p>
+    <table>
+      <thead><tr><th></th><th>Token Factory API</th><th>Self-Hosted GPU VM</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Setup</strong></td><td>No servers to manage</td><td>Full control over infra</td></tr>
+        <tr><td><strong>Models</strong></td><td>Nebius-supported list only</td><td>Any HuggingFace model</td></tr>
+        <tr><td><strong>Optimizer</strong></td><td>Managed (AdamW)</td><td>Custom (AdamW, MUON, etc.)</td></tr>
+        <tr><td><strong>Cost</strong></td><td>Pay per trained token</td><td>Pay per GPU-hour</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Quick iteration, no ML infra experience</td><td>Custom training loops, research</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Job flow -->
+    <h3>Token Factory Job Lifecycle</h3>
+    <div class="flow">
+      <div class="flow-box">Upload JSONL</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">Create Job</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">validating_files</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">queued</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">running</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box active">succeeded</div>
+    </div>
+  </section>
+
+
+  <!-- ── Approach A ────────────────────────────────── -->
+  <section id="approach-a">
+    <h2>Approach A — Nebius Token Factory API</h2>
+    <p>
+      Uses the OpenAI-compatible REST API. No GPU provisioning needed —
+      just upload your data, submit a job, and download the checkpoint.
+    </p>
+
+    <h3>Prerequisites</h3>
+    <ul style="padding-left:1.5rem; color:#c9d1d9; margin-bottom:1rem;">
+      <li>A Nebius account with Token Factory access</li>
+      <li>An API key exported as <code>NEBIUS_API_KEY</code></li>
+      <li>Training data in JSONL format (see <a href="#dataset" style="color:var(--accent)">Dataset Format</a>)</li>
+    </ul>
+
+    <pre><code><span class="cm"># Install the OpenAI SDK (Token Factory uses the same API surface)</span>
+pip install openai</code><div class="lang-label">bash</div></pre>
+
+    <h3>Step 1 — Initialize client</h3>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = OpenAI(
+    base_url=<span class="st">"https://api.tokenfactory.nebius.com/v1/"</span>,
+    api_key=os.environ[<span class="st">"NEBIUS_API_KEY"</span>],
+    <span class="cm"># ^ Set via: export NEBIUS_API_KEY="your-key-here"</span>
+)</code><div class="lang-label">python</div></pre>
+
+    <h3>Step 2 — Upload datasets</h3>
+    <pre><code><span class="cm"># Upload training file</span>
+train_file = client.files.create(
+    file=<span class="fn">open</span>(<span class="st">"training.jsonl"</span>, <span class="st">"rb"</span>),
+    purpose=<span class="st">"fine-tune"</span>,
+)
+<span class="fn">print</span>(<span class="st">f"Training file ID: </span>{train_file.id}<span class="st">"</span>)
+
+<span class="cm"># Upload optional validation file (recommended: 10–20% of data)</span>
+val_file = client.files.create(
+    file=<span class="fn">open</span>(<span class="st">"validation.jsonl"</span>, <span class="st">"rb"</span>),
+    purpose=<span class="st">"fine-tune"</span>,
+)
+<span class="fn">print</span>(<span class="st">f"Validation file ID: </span>{val_file.id}<span class="st">"</span>)</code><div class="lang-label">python</div></pre>
+
+    <h3>Step 3 — Create fine-tuning job</h3>
+    <pre><code>job_request = {
+    <span class="st">"model"</span>: <span class="st">"meta-llama/Llama-3.1-8B-Instruct"</span>,
+    <span class="cm"># ^ Base model to fine-tune. Must be on Nebius's supported list.</span>
+
+    <span class="st">"training_file"</span>: train_file.id,
+    <span class="st">"validation_file"</span>: val_file.id,  <span class="cm"># optional but recommended</span>
+
+    <span class="st">"suffix"</span>: <span class="st">"math-aimo"</span>,
+    <span class="cm"># ^ Appended to the model name for identification (e.g. llama-3.1-8b-math-aimo)</span>
+
+    <span class="st">"seed"</span>: <span class="nu">42</span>,
+    <span class="cm"># ^ Random seed for reproducibility across runs</span>
+
+    <span class="st">"hyperparameters"</span>: {
+        <span class="st">"n_epochs"</span>: <span class="nu">3</span>,
+        <span class="cm"># ^ Full passes over the dataset. More → specialization, less → generality.</span>
+
+        <span class="st">"batch_size"</span>: <span class="nu">8</span>,
+        <span class="cm"># ^ Samples per gradient step. Range: 8–32. Larger = more stable but more VRAM.</span>
+
+        <span class="st">"learning_rate"</span>: <span class="nu">1e-5</span>,
+        <span class="cm"># ^ Step size. Range: 1e-6 to 5e-5. Too high → diverge; too low → slow.</span>
+
+        <span class="st">"context_length"</span>: <span class="nu">4096</span>,
+        <span class="cm"># ^ Max tokens (prompt + completion). Set to cover P95–P99 of your examples.</span>
+        <span class="cm"># ^ Longer = more VRAM. Analyze your data distribution first.</span>
+
+        <span class="st">"warmup_ratio"</span>: <span class="nu">0.05</span>,
+        <span class="cm"># ^ Fraction of steps for LR warm-up (linear ramp from 0 → peak).</span>
+
+        <span class="st">"weight_decay"</span>: <span class="nu">0.01</span>,
+        <span class="cm"># ^ L2 regularization. Helps prevent overfitting on small datasets.</span>
+
+        <span class="st">"lora"</span>: <span class="kw">True</span>,
+        <span class="cm"># ^ Enable LoRA (Low-Rank Adaptation). Trains only small adapter matrices.</span>
+        <span class="cm"># ^ Much less VRAM than full fine-tune. Set False for full FT.</span>
+
+        <span class="st">"lora_r"</span>: <span class="nu">16</span>,
+        <span class="cm"># ^ LoRA rank. Higher = more expressive but more memory. Range: 8–128.</span>
+
+        <span class="st">"lora_alpha"</span>: <span class="nu">32</span>,
+        <span class="cm"># ^ Scaling factor. Effective LR multiplier = lora_alpha / lora_r.</span>
+        <span class="cm"># ^ Set to 2× lora_r as a baseline.</span>
+
+        <span class="st">"lora_dropout"</span>: <span class="nu">0.05</span>,
+        <span class="cm"># ^ Dropout on LoRA layers. 0 = no dropout. 0.05–0.1 adds regularization.</span>
+
+        <span class="st">"packing"</span>: <span class="kw">True</span>,
+        <span class="cm"># ^ Pack multiple short examples into one sequence up to context_length.</span>
+        <span class="cm"># ^ Maximizes GPU utilization. Disable only if example ordering matters.</span>
+
+        <span class="st">"max_grad_norm"</span>: <span class="nu">1.0</span>,
+        <span class="cm"># ^ Gradient clipping threshold. Prevents exploding gradients.</span>
+    },
+
+    <span class="cm"># Optional: push checkpoint to HuggingFace Hub after training</span>
+    <span class="st">"integrations"</span>: [
+        {
+            <span class="st">"type"</span>: <span class="st">"wandb"</span>,
+            <span class="st">"wandb"</span>: {
+                <span class="st">"project"</span>: <span class="st">"aimo-finetune"</span>,
+                <span class="st">"name"</span>: <span class="st">"llama-3.1-8b-math-run1"</span>,
+                <span class="st">"entity"</span>: <span class="st">"your-wandb-username"</span>,
+            }
+        },
+        <span class="cm"># Hugging Face push (optional)</span>
+        <span class="cm"># {</span>
+        <span class="cm">#     "type": "huggingface",</span>
+        <span class="cm">#     "huggingface": {</span>
+        <span class="cm">#         "output_repo_name": "your-hf-username/my-math-model",</span>
+        <span class="cm">#         "api_token": os.environ["HF_TOKEN"],</span>
+        <span class="cm">#     }</span>
+        <span class="cm"># }</span>
+    ],
+}
+
+job = client.fine_tuning.jobs.create(**job_request)
+<span class="fn">print</span>(<span class="st">f"Job created: </span>{job.id}<span class="st">  status: </span>{job.status}<span class="st">"</span>)</code><div class="lang-label">python</div></pre>
+
+    <h3>Step 4 — Poll until complete</h3>
+    <pre><code><span class="kw">import</span> time
+
+TERMINAL = {<span class="st">"succeeded"</span>, <span class="st">"failed"</span>, <span class="st">"cancelled"</span>}
+
+<span class="kw">while</span> job.status <span class="kw">not in</span> TERMINAL:
+    time.sleep(<span class="nu">15</span>)  <span class="cm"># poll every 15 seconds — avoid hammering the API</span>
+    job = client.fine_tuning.jobs.retrieve(job.id)
+    <span class="fn">print</span>(<span class="st">f"Status: </span>{job.status}<span class="st">  |  Trained tokens: </span>{job.trained_tokens}<span class="st">"</span>)
+
+<span class="kw">if</span> job.status == <span class="st">"succeeded"</span>:
+    <span class="fn">print</span>(<span class="st">"Training complete!"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"Job failed: </span>{job.error}<span class="st">"</span>)</code><div class="lang-label">python</div></pre>
+
+    <h3>Step 5 — Download checkpoints</h3>
+    <pre><code><span class="kw">import</span> pathlib
+
+checkpoints = client.fine_tuning.jobs.checkpoints.list(job.id)
+
+<span class="kw">for</span> ckpt <span class="kw">in</span> checkpoints.data:
+    <span class="fn">print</span>(<span class="st">f"Checkpoint </span>{ckpt.id}<span class="st">  step </span>{ckpt.step_number}<span class="st">"</span>)
+
+<span class="cm"># Download the latest checkpoint's files</span>
+latest = checkpoints.data[<span class="nu">-1</span>]
+
+<span class="kw">for</span> file_id <span class="kw">in</span> latest.result_files:
+    content = client.files.content(file_id)
+    out_path = pathlib.Path(<span class="st">f"checkpoint_</span>{latest.step_number}<span class="st">_</span>{file_id}<span class="st">"</span>)
+    out_path.write_bytes(content.content)
+    <span class="fn">print</span>(<span class="st">f"Saved: </span>{out_path}<span class="st">"</span>)</code><div class="lang-label">python</div></pre>
+
+    <div class="callout tip">
+      <div class="callout-title">Tip</div>
+      Use the <strong>latest checkpoint</strong> for deployment unless you have a reason to use an earlier one (e.g. validation loss spiked at the end).
+    </div>
+  </section>
+
+
+  <!-- ── Approach B ────────────────────────────────── -->
+  <section id="approach-b">
+    <h2>Approach B — Self-Hosted GPU VM (unsloth + TRL)</h2>
+    <p>
+      Provision a Nebius GPU VM, run <code>setup.sh</code>, and train with your own loop.
+      Gives full control over optimizer, LoRA config, and training code.
+    </p>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <strong>Create a VM on Nebius Console</strong>
+          <p>Go to <strong>Compute → Create Instance</strong>. Recommended spec:</p>
+          <table>
+            <tr><th>Field</th><th>Recommended</th></tr>
+            <tr><td>Image</td><td>Ubuntu 22.04 + CUDA 12.x</td></tr>
+            <tr><td>GPU</td><td>H100 SXM5 80GB × 1–4</td></tr>
+            <tr><td>RAM</td><td>128–256 GB</td></tr>
+            <tr><td>Disk</td><td>500 GB SSD</td></tr>
+            <tr><td>SSH key</td><td>Paste <code>~/.ssh/id_nebius.pub</code></td></tr>
+          </table>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Connect via SSH</strong>
+          <pre><code>ssh -i ~/.ssh/id_nebius ubuntu@&lt;nebius-ip&gt;</code><div class="lang-label">bash</div></pre>
+          <p>Add to <code>~/.ssh/config</code> for convenience:</p>
+          <pre><code>Host nebius
+    HostName &lt;nebius-ip&gt;
+    User ubuntu
+    IdentityFile ~/.ssh/id_nebius</code><div class="lang-label">ssh config</div></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Run the one-shot setup script</strong>
+          <pre><code><span class="cm"># From your Mac — upload the script</span>
+scp <span class="st">"Chapter LLM Nebius Setup/setup.sh"</span> nebius:~/setup.sh
+
+<span class="cm"># On the server — install everything (~10–15 min)</span>
+bash ~/setup.sh</code><div class="lang-label">bash</div></pre>
+          <p>Installs: PyTorch (CUDA-matched) → unsloth → trl → peft → vLLM → wandb → clones your repo.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Start training inside tmux</strong>
+          <pre><code>tmux new -s train
+
+source ~/llm_env/bin/activate
+cd ~/Journey_of_MachineLearning/<span class="st">"Chapter LLM SFT"</span>
+python sft_example.py <span class="nu">2</span>&gt;&amp;<span class="nu">1</span> | tee training.log
+
+<span class="cm"># Detach without killing: Ctrl+b, then d</span>
+<span class="cm"># Reattach later: tmux attach -t train</span></code><div class="lang-label">bash</div></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Monitor GPU usage</strong>
+          <pre><code>watch -n 2 nvidia-smi     <span class="cm"># GPU util should be 90–100%</span>
+nvtop                     <span class="cm"># nicer htop-style GPU view</span>
+tail -f training.log      <span class="cm"># live loss output</span></code><div class="lang-label">bash</div></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Multi-GPU: use torchrun</strong>
+          <pre><code><span class="kw">export</span> CUDA_VISIBLE_DEVICES=<span class="nu">0,1</span>
+torchrun --nproc_per_node=<span class="nu">2</span> sft_example.py</code><div class="lang-label">bash</div></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Stop the VM when done — GPU time is billed per minute</strong>
+          <pre><code>sudo shutdown now</code><div class="lang-label">bash</div></pre>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <div class="callout-title">Cost warning</div>
+      H100 80GB instances cost ~$2–4/hour. Always stop the VM when not training.
+      Use <code>tmux</code> so a dropped SSH connection doesn't kill your job.
+    </div>
+  </section>
+
+
+  <!-- ── Hyperparameters ───────────────────────────── -->
+  <section id="hyperparams">
+    <h2>Hyperparameter Reference</h2>
+    <p>Applies to both approaches (Token Factory fields map 1:1 to TRL/unsloth args).</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Range</th>
+          <th>Default</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>n_epochs</code></td>
+          <td>1–20</td>
+          <td class="default">3</td>
+          <td>More epochs → specialization; risk of overfitting</td>
+        </tr>
+        <tr>
+          <td><code>batch_size</code></td>
+          <td>8–32</td>
+          <td class="default">8</td>
+          <td>Larger = more stable gradients, more VRAM</td>
+        </tr>
+        <tr>
+          <td><code>learning_rate</code></td>
+          <td>1e-6 – 5e-5</td>
+          <td class="default">1e-5</td>
+          <td>Too high → diverge; too low → slow. Try 2e-5 first</td>
+        </tr>
+        <tr>
+          <td><code>context_length</code></td>
+          <td>int (tokens)</td>
+          <td class="default">8192</td>
+          <td>Cover P95–P99 of your examples. Longer = more VRAM</td>
+        </tr>
+        <tr>
+          <td><code>warmup_ratio</code></td>
+          <td>0–1</td>
+          <td class="default">0</td>
+          <td>Fraction of steps for LR warm-up. 0.05 recommended</td>
+        </tr>
+        <tr>
+          <td><code>weight_decay</code></td>
+          <td>≥ 0</td>
+          <td class="default">0</td>
+          <td>L2 regularization. 0.01–0.1 for small datasets</td>
+        </tr>
+        <tr>
+          <td><code>lora</code></td>
+          <td>bool</td>
+          <td class="default">false</td>
+          <td>Enable LoRA adapters. Recommended for 7B+ models</td>
+        </tr>
+        <tr>
+          <td><code>lora_r</code></td>
+          <td>8–128</td>
+          <td class="default">8</td>
+          <td>LoRA rank. Higher = more expressive, more VRAM</td>
+        </tr>
+        <tr>
+          <td><code>lora_alpha</code></td>
+          <td>≥ 8</td>
+          <td class="default">8</td>
+          <td>Scaling factor. Typically set to 2× lora_r</td>
+        </tr>
+        <tr>
+          <td><code>lora_dropout</code></td>
+          <td>0–1</td>
+          <td class="default">0</td>
+          <td>Dropout on LoRA layers. 0.05 adds light regularization</td>
+        </tr>
+        <tr>
+          <td><code>packing</code></td>
+          <td>bool</td>
+          <td class="default">true</td>
+          <td>Pack short examples into full-length sequences. Boosts GPU util</td>
+        </tr>
+        <tr>
+          <td><code>max_grad_norm</code></td>
+          <td>≥ 0</td>
+          <td class="default">1</td>
+          <td>Gradient clipping. 1.0 is a safe default</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-title">MUON optimizer (self-hosted only)</div>
+      When using <strong>Approach B</strong>, you can replace AdamW on LoRA B-matrices with
+      <strong>MUON</strong> for faster convergence. See
+      <code>sft_lora_muon.py</code> for the implementation. MUON is not available via
+      the Token Factory API.
+    </div>
+  </section>
+
+
+  <!-- ── Dataset Format ────────────────────────────── -->
+  <section id="dataset">
+    <h2>Dataset Format (JSONL)</h2>
+    <p>
+      Both approaches expect <strong>JSONL</strong> (one JSON object per line),
+      in the OpenAI conversation format:
+    </p>
+    <pre><code><span class="cm">// training.jsonl — each line is one training example</span>
+{<span class="st">"messages"</span>: [
+  {<span class="st">"role"</span>: <span class="st">"system"</span>,    <span class="st">"content"</span>: <span class="st">"You are a math problem solver..."</span>},
+  {<span class="st">"role"</span>: <span class="st">"user"</span>,      <span class="st">"content"</span>: <span class="st">"What is the sum of 1 to 100?"</span>},
+  {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: <span class="st">"Using n(n+1)/2: 5050.\n\\boxed{5050}"</span>}
+]}
+{<span class="st">"messages"</span>: [
+  {<span class="st">"role"</span>: <span class="st">"system"</span>,    <span class="st">"content"</span>: <span class="st">"You are a math problem solver..."</span>},
+  {<span class="st">"role"</span>: <span class="st">"user"</span>,      <span class="st">"content"</span>: <span class="st">"How many primes are less than 20?"</span>},
+  {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: <span class="st">"2,3,5,7,11,13,17,19 → 8 primes.\n\\boxed{8}"</span>}
+]}</code><div class="lang-label">jsonl</div></pre>
+
+    <h3>Generate JSONL from Python dicts</h3>
+    <pre><code><span class="kw">import</span> json
+
+data = [
+    {<span class="st">"problem"</span>: <span class="st">"..."</span>, <span class="st">"solution"</span>: <span class="st">"..."</span>},
+    <span class="cm"># ... more examples</span>
+]
+
+SYSTEM = <span class="st">"You are a math problem solver. Show reasoning, answer in \\boxed{}."</span>
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"training.jsonl"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> row <span class="kw">in</span> data:
+        record = {<span class="st">"messages"</span>: [
+            {<span class="st">"role"</span>: <span class="st">"system"</span>,    <span class="st">"content"</span>: SYSTEM},
+            {<span class="st">"role"</span>: <span class="st">"user"</span>,      <span class="st">"content"</span>: row[<span class="st">"problem"</span>]},
+            {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: row[<span class="st">"solution"</span>]},
+        ]}
+        f.write(json.dumps(record) + <span class="st">"\n"</span>)</code><div class="lang-label">python</div></pre>
+
+    <div class="callout tip">
+      <div class="callout-title">Dataset size tips</div>
+      Split 80–90% train / 10–20% validation. Analyze token length distribution and set
+      <code>context_length</code> to cover P95–P99 of your examples — anything shorter
+      gets truncated and anything longer adds padding overhead.
+    </div>
+
+    <h3>Good public math datasets</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Size</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>lighteval/MATH</code></td><td>12k</td><td>Competition math, step-by-step solutions</td></tr>
+        <tr><td><code>AI-MO/NuminaMath-CoT</code></td><td>860k</td><td>Chain-of-thought math, boxed answers</td></tr>
+        <tr><td><code>open-r1/OpenR1-Math-220k</code></td><td>220k</td><td>Reasoning traces, similar to AIMO format</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- ── Monitor & Download ────────────────────────── -->
+  <section id="monitor">
+    <h2>Monitor Training &amp; Download Results</h2>
+
+    <h3>Stream events (Token Factory)</h3>
+    <pre><code>events = client.fine_tuning.jobs.list_events(job.id)
+<span class="kw">for</span> event <span class="kw">in</span> events.data:
+    <span class="fn">print</span>(<span class="st">f"[</span>{event.created_at}<span class="st">] </span>{event.message}<span class="st">"</span>)
+
+<span class="cm"># Key messages to look for:</span>
+<span class="cm"># "Dataset processed successfully"  → data validated OK</span>
+<span class="cm"># "Training completed successfully"  → done, ready to download</span></code><div class="lang-label">python</div></pre>
+
+    <h3>Key response fields</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>status</code></td><td>Current job state (see flow above)</td></tr>
+        <tr><td><code>trained_tokens</code></td><td>Tokens processed so far</td></tr>
+        <tr><td><code>trained_steps</code></td><td>Gradient steps completed</td></tr>
+        <tr><td><code>total_steps</code></td><td>Total steps planned</td></tr>
+        <tr><td><code>result_files</code></td><td>File IDs of saved artifacts</td></tr>
+        <tr><td><code>error</code></td><td>Structured error info if status=failed</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Transient errors</h3>
+    <div class="callout warn">
+      <div class="callout-title">5xx errors</div>
+      For transient server errors (5xx), safely resubmit the same job request.
+      The API is idempotent within a session if you use the same <code>seed</code>.
+    </div>
+  </section>
+
+
+  <!-- ── Files ────────────────────────────────────── -->
+  <section id="files">
+    <h2>Repo Files Reference</h2>
+    <div class="file-grid">
+      <a class="file-card" href="../Chapter%20LLM%20Nebius%20Setup/setup.sh">
+        <div class="fname">setup.sh</div>
+        <div class="fdesc">One-shot GPU VM installer. Auto-detects CUDA, installs PyTorch → unsloth → trl → vLLM → wandb.</div>
+      </a>
+      <a class="file-card" href="../Chapter%20LLM%20Nebius%20Setup/tmux_guide.sh">
+        <div class="fname">tmux_guide.sh</div>
+        <div class="fdesc">Keep training alive after SSH disconnect. Cheat sheet for sessions, panes, scrolling.</div>
+      </a>
+      <a class="file-card" href="../Chapter%20LLM%20Nebius%20Setup/nebius_quickstart.md">
+        <div class="fname">nebius_quickstart.md</div>
+        <div class="fdesc">Step-by-step: VM creation → SSH → setup → training → file transfer.</div>
+      </a>
+      <a class="file-card" href="../Chapter%20LLM%20SFT/sft_example.py">
+        <div class="fname">sft_example.py</div>
+        <div class="fdesc">SFT with unsloth + SFTTrainer. GPT-OSS 120B, QLoRA, annotated params.</div>
+      </a>
+      <a class="file-card" href="../Chapter%20LLM%20SFT/sft_lora_muon.py">
+        <div class="fname">sft_lora_muon.py</div>
+        <div class="fdesc">LoRA + MUON optimizer. Dual-optimizer loop, Newton-Schulz orthogonalization explained.</div>
+      </a>
+      <a class="file-card" href="../Chapter%20LLM%20vLLM/vllm_example.py">
+        <div class="fname">vllm_example.py</div>
+        <div class="fdesc">Serve your fine-tuned model with vLLM. Offline batch + OpenAI-compatible API.</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    Reference: <a href="https://docs.tokenfactory.nebius.com/post-training/how-to-fine-tune" style="color:var(--accent)">docs.tokenfactory.nebius.com</a>
+    &nbsp;·&nbsp;
+    Journey of Machine Learning — LLM Chapter
+  </footer>
+
+</div>
+</body>
+</html>
